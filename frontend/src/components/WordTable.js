@@ -67,7 +67,7 @@ function WordTable({ words, refreshWords }) {
   // 테이블에서 표시할 컬럼 옵션과 컬럼 표시 여부를 관리하는 상태 및 토글 함수
   const COLUMN_OPTIONS = [
     { key: "word", label: "단어", defaultVisible: true },
-    { key: "hiragana", label: "히라가나", defaultVisible: true },
+    { key: "hiragana", label: "히라가나", defaultVisible: false },
     { key: "meaning", label: "뜻", defaultVisible: true },
     { key: "korean", label: "한국어 발음", defaultVisible: false },
     { key: "category", label: "분류", defaultVisible: true },
