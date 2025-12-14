@@ -62,9 +62,18 @@ class WordRepository:
 
         cursor.execute(
             """
-            SELECT id, word, hiragana, meaning, korean, wrong_count, created_at, updated_at
-            FROM words
-            ORDER BY updated_at DESC
+            SELECT w.id, w.word, w.hiragana, w.meaning, w.korean, w.wrong_count, w.created_at, w.updated_at
+            FROM words w
+            WHERE NOT EXISTS
+                (
+                SELECT 1
+                FROM word_categories wc
+                JOIN categories c
+                    ON wc.category_id = c.id
+                WHERE wc.word_id = w.id
+                    AND c.name = "예문"
+                )
+            ORDER BY updated_at DESC;
             """
         )
 
