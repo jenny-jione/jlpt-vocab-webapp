@@ -19,7 +19,7 @@ function AppWrapper() {
 
 function App() {
   const navigate = useNavigate();
-  const bookmarks = ["북마크", "문법", "예문"]
+  const bookmarks = ["예문"]
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -66,6 +66,7 @@ function App() {
         ))}
         <button onClick={() => navigate("/add")}>단어 추가</button>
       </nav>
+
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/kanji/:kanji" element={<KanjiPage />} />
