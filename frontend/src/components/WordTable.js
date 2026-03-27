@@ -10,6 +10,7 @@ function WordTable({ words, refreshWords }) {
   const [editingWord, setEditingWord] = useState(null);
   const [editedData, setEditedData] = useState({});
   const autoFocusRef = useRef(null);
+  const [relatedList, setRelatedList] = useState([]); // 선택된 단어(word_id)에 해당하는 한자 리스트 (버튼으로 표시용)
 
   const handleEditClick = (item) => {
     setEditingWord(item);
@@ -120,6 +121,23 @@ function WordTable({ words, refreshWords }) {
     };
   }, [editingWord]);
 
+
+  useEffect(() => {
+  if (!editingWord) return;
+
+  const fetchData = async () => {
+    try {
+      const res = await fetch(`${API_URL}/word/${editingWord.id}`);
+      const data = await res.json();
+      setRelatedList(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  fetchData();
+}, [editingWord]);
+
   return (
     <>
     {/* 사용자가 표시할 컬럼을 선택할 수 있는 체크박스 UI */}
@@ -189,6 +207,11 @@ function WordTable({ words, refreshWords }) {
               {visibleColumns.includes("category") && (
                 <td>
                   <div>
+                    <span 
+                      className="info-badge"
+                      onClick={() => handleEditClick(item)}>
+                        ⓘ
+                    </span>
                     <span className="check-badge">{item.wrong_count}</span>
                     {item.category.map((c) => (
                       <button
@@ -254,6 +277,17 @@ function WordTable({ words, refreshWords }) {
               {formatKST(editedData.created_at)}
               <br></br>
               {formatKST(editedData.updated_at)}
+              <br></br>
+              <div>
+              {relatedList.map((item, index) => (
+                <button
+                  key={`${item.word_id}-${index}`}
+                  onClick={() => navigate(`/kanji/${item.kanji}`)}
+                  className="word-btn">
+                  {item.kanji}
+                </button>
+              ))}
+              </div>
             </div>
 
             <div className="form-row">

@@ -97,6 +97,24 @@ class WordRepository:
 
         conn.close()
         return result
+    
+    @staticmethod
+    def get_kanjis_by_word_id(word_id: str) -> List[dict]:
+        """단어 id로 그 단어 안에 있는 한자 검색"""
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            """
+            SELECT word_id, kanji
+            FROM word_kanji
+            WHERE word_id = ?
+            """,
+            (word_id,),
+        )
+        result = cursor.fetchall()
+        conn.close()
+        return result
 
     @staticmethod
     def get_words_by_kanji(kanji: str) -> List[dict]:

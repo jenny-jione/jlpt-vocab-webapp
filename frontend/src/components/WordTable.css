@@ -116,6 +116,18 @@
   vertical-align: middle;    /* 단어와 수직 정렬 */
 }
 
+/* 단어 정보 뱃지 */
+.info-badge {
+  display: inline-block;
+  background-color: #eeeeee; /* 연한 회색 배경 */
+  color: #333;               /* 글자 색 */
+  font-size: 0.75rem;        /* 작은 글씨 */
+  padding: 2px 4px;          /* 위아래 2px, 좌우 6px */
+  border-radius: 10px;       /* 둥근 모서리 */
+  margin-left: 1px;          /* 단어와 간격 */
+  vertical-align: middle;    /* 단어와 수직 정렬 */
+}
+
 
 /* 체크박스 위치 */
 .column-selector {

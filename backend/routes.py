@@ -17,6 +17,21 @@ def get_all_words():
     return WordRepository.get_all_words()
 
 
+@router.get("/word/{word_id}")
+def get_words_by_kanji(
+    word_id: int = Path(
+        ...,
+        description="조회할 단어의 ID (예: 73, 2071)",
+        example="73",
+    )
+):
+    """특정 단어 ID에 포함된 모든 한자를 조회"""
+    kanjis = WordRepository.get_kanjis_by_word_id(word_id)
+    if not kanjis:
+        return []
+    return kanjis
+
+
 @router.get("/kanji/{kanji}")
 def get_words_by_kanji(
     kanji: str = Path(
