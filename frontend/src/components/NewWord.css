@@ -37,14 +37,14 @@
 }
 
 .form-row input:focus {
-  border-color: #007bff;
+  border-color: #4086d0;
   outline: none;
 }
 
 .add-btn {
   width: 100%;
   padding: 10px 0;
-  background-color: #007bff;
+  background-color: #4086d0;
   color: white;
   border: none;
   border-radius: 8px;
