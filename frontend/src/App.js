@@ -6,6 +6,7 @@ import Categories from "./components/Categories";
 import CategoryPage from "./components/CategoryPage";
 import NewWord from "./components/NewWord";
 import RandomKanji from "./components/RandomKanji";
+import WordTest from "./components/WordTest";
 import "./App.css";  // CSS 파일 import
 
 
@@ -58,6 +59,7 @@ function App() {
       <nav className="navbar">
         <button onClick={() => navigate("/")}>전체목록</button>
         <button onClick={() => navigate("/kanji")}>랜덤한자</button>
+        <button onClick={() => navigate("/test")}>테스트</button>
         <button onClick={() => navigate("/categories")}>카테고리</button>
         {bookmarks.map((item) => (
           <button onClick={() => navigate(`/category/${item}`)}>
@@ -73,6 +75,7 @@ function App() {
         <Route path="/categories" element={<Categories />} />
         <Route path="/category/:category" element={<CategoryPage />} />
         <Route path="/kanji" element={<RandomKanji />} />
+        <Route path="/test" element={<WordTest />} />
         <Route path="/add" element={<NewWord />} />
       </Routes>
     </>
