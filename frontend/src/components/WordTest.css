@@ -1,0 +1,156 @@
+/* 컨테이너 공통 스타일 */
+.test-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 30px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  text-align: center;
+}
+
+/* 1단계: 대상 선정 화면 전용 */
+.step1-header { margin: 0; margin-bottom: 20px; }
+
+.column-selector {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.target-btn {
+  padding: 6px 12px;
+  font-size: 14px;
+  background-color: #f0f0f0;
+  color: #666;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.target-btn.active {
+  background-color: #4086d0;
+  color: white;
+}
+
+/* 문제 카드 스타일 */
+.question-card {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.question-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.label {
+  font-weight: bold;
+  width: 100px;
+  text-align: left;
+  color: #555;
+}
+
+.value-text {
+  flex: 1;
+  text-align: left;
+  font-size: 18px;
+}
+
+.answer-input {
+  flex: 1;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+}
+
+.answer-input.readonly {
+  border: none;
+  background-color: transparent;
+}
+
+/* 결과 메시지 */
+.result-box {
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.result-box.correct {
+  background-color: #e6fffa;
+  color: #2d3748;
+  border: 1px solid #38a169;
+}
+
+.result-box.wrong {
+  background-color: #fff5f5;
+  color: #c53030;
+  border: 1px solid #feb2b2;
+}
+
+/* 하단 버튼 */
+.action-btn {
+  width: 100%;
+  padding: 15px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #4086d0;
+  color: white;
+}
+
+.action-btn.secondary {
+  background-color: #4a5568;
+}
+
+/* 결과 박스 내 전체 정보 스타일 */
+.word-detail-view {
+  background: rgba(255, 255, 255, 0.5);
+  padding: 10px;
+  border-radius: 8px;
+  text-align: left;
+  margin-top: 10px;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  border-bottom: 1px dashed #ddd;
+}
+
+.detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-weight: bold;
+  color: #555;
+  font-size: 0.9rem;
+  margin-right: 15px;
+}
+
+.detail-value {
+  color: #222;
+  font-weight: 500;
+}
+
+/* 정답/오답 배경색 강조 */
+.result-box.correct {
+  border: 2px solid #4caf50;
+  background-color: #e8f5e9;
+}
+
+.result-box.wrong {
+  border: 2px solid #f44336;
+  background-color: #ffebee;
+}
