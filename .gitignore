@@ -42,3 +42,5 @@ backend/kanji_index.json
 backend/word_index.json
 
 .DS_Store
+
+backend/kanji_vocab.db
