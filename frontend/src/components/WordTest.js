@@ -10,6 +10,8 @@ const WordTest = () => {
     question: "word",
     answer: "meaning",
   });
+  // 입력 방식 ('input' 또는 'self')
+  const [inputMethod, setInputMethod] = useState("self");
   const [currentIdx, setCurrentIdx] = useState(0);
   const [testWords, setTestWords] = useState([]);
   const [userAnswer, setUserAnswer] = useState("");
@@ -40,12 +42,22 @@ const WordTest = () => {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key !== "Enter" || e.nativeEvent?.isComposing) return;
-      e.preventDefault();
+      if (e.nativeEvent?.isComposing) return;
 
-      if (step === 1) startTest();
-      else if (step === 2) {
-        showResult ? nextQuestion() : checkAnswer();
+      if (e.key === "Enter") {
+        e.preventDefault();
+        if (step === 1) startTest();
+        else if (step === 2) {
+          if (showResult) nextQuestion();
+          else if (inputMethod === "input") checkAnswer();
+          else setShowResult(true); // 자가테스트 모드일 때 엔터 치면 정답 보기
+        }
+      }
+      
+      // 자가테스트 모드 단축키 추가 (1: 안다, 2: 모른다)
+      if (step === 2 && showResult && inputMethod === "self") {
+        if (e.key === "1") nextQuestion();
+        if (e.key === "2") handleSelfWrong();
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -87,6 +99,12 @@ const WordTest = () => {
     setShowResult(true);
   };
 
+  // 자가테스트에서 '모름'을 눌렀을 때 처리
+  const handleSelfWrong = async () => {
+    await handleCheckCount(testWords[currentIdx]);
+    nextQuestion();
+  };
+
   const handleCheckCount = async (item) => {
     try {
       const updated = { ...item, wrong_count: (item.wrong_count || 0) + 1 };
@@ -106,18 +124,41 @@ const WordTest = () => {
   if (step === 1) {
     return (
       <div className="test-container">
-        <h3 className="step1-header">테스트 유형 선택</h3>
-        <div className="column-selector">
-          {TEST_MODES.map((mode) => (
-            <button
-              key={mode.key}
-              onClick={() => setTestMode(mode)}
-              className={`target-btn ${testMode.key === mode.key ? "active" : ""}`}
-            >
-              {mode.label}
-            </button>
-          ))}
+        <h3 className="step1-header">테스트 설정</h3>
+        
+        <div className="option-group">
+          <p className="option-label">유형 선택</p>
+          <div className="column-selector">
+            {TEST_MODES.map((mode) => (
+              <button
+                key={mode.key}
+                onClick={() => setTestMode(mode)}
+                className={`target-btn ${testMode.key === mode.key ? "active" : ""}`}
+              >
+                {mode.label}
+              </button>
+            ))}
+          </div>
         </div>
+
+        <div className="option-group">
+          <p className="option-label">방식 선택</p>
+          <div className="column-selector" style={{ display: 'flex', gap: '10px' }}>
+            <button 
+              className={`target-btn ${inputMethod === "self" ? "active" : ""}`}
+              onClick={() => setInputMethod("self")}
+            >
+              자가 테스트
+            </button>
+            <button 
+              className={`target-btn ${inputMethod === "input" ? "active" : ""}`}
+              onClick={() => setInputMethod("input")}
+            >
+              직접 입력
+            </button>
+          </div>
+        </div>
+      
         <button className="action-btn" onClick={startTest}>
           시험 시작 (Enter)
         </button>
@@ -132,11 +173,10 @@ const WordTest = () => {
   return (
     <div className="test-container">
       <div style={{ marginBottom: "20px", color: "#888", fontSize: "14px" }}>
-        문제 {currentIdx + 1} / {testWords.length}
+        문제 {currentIdx + 1} / {testWords.length} ({inputMethod === 'input' ? '입력' : '자가진단'})
       </div>
 
       <div className="question-card">
-        {/* 문제로 보여줄 항목 (Question) */}
         <div className="question-row">
           <span className="label">{getLabel(testMode.question)}</span>
           <span className="value-text highlight">{currentWord[testMode.question]}</span>
@@ -144,27 +184,33 @@ const WordTest = () => {
 
         <hr style={{ border: '0.5px solid #eee', margin: '15px 0' }} />
 
-        {/* 정답을 입력받을 항목 (Answer) */}
         <div className="question-row">
           <span className="label">{getLabel(testMode.answer)}</span>
-          <input
-            ref={inputRef}
-            className={`answer-input ${showResult ? "readonly" : ""}`}
-            value={userAnswer}
-            onChange={(e) => setUserAnswer(e.target.value)}
-            disabled={showResult}
-            placeholder={`${getLabel(testMode.answer)}를 입력하세요`}
-          />
+          {inputMethod === "input" ? (
+            <input
+              ref={inputRef}
+              // className={`answer-input ${showResult ? "readonly" : ""}`}
+              className={`answer-input ${showResult ? "readonly" : ""}`}
+              value={userAnswer}
+              onChange={(e) => setUserAnswer(e.target.value)}
+              disabled={showResult}
+              placeholder="정답을 입력하세요"
+            />
+          ) : (
+            <span className={`value-text ${showResult ? "" : "gray"}`}>
+              {showResult 
+                ? currentWord[testMode.answer] 
+                : "생각해본 뒤 아래 버튼을 누르세요"
+              }
+            </span>
+          )}
         </div>
       </div>
 
       {showResult && (
-        <div className={`result-box ${isCorrect ? "correct" : "wrong"}`}>
-          <h4>{isCorrect ? "⭕ 정답입니다!" : "❌ 틀렸습니다!"}</h4>
-          {!isCorrect && (
-            <p>정답: <strong>{currentWord[testMode.answer]}</strong></p>
-          )}
-
+        <div className={`result-box ${inputMethod === 'input' ? (isCorrect ? "correct" : "wrong") : "info"}`}>
+          {inputMethod === 'input' && <h4>{isCorrect ? "⭕ 정답입니다!" : "❌ 틀렸습니다!"}</h4>}
+          
           {/* 전체 정보를 보여주는 상세 영역 */}
           <div className="word-detail-view">
             <div className="detail-item">
@@ -183,16 +229,32 @@ const WordTest = () => {
               <span className="detail-label">발음</span>
               <span className="detail-value">{currentWord.korean}</span>
             </div>
-          </div>
+          </div>          
+
+
         </div>
       )}
 
-      <button
-        className={`action-btn ${showResult ? "secondary" : ""}`}
-        onClick={showResult ? nextQuestion : checkAnswer}
-      >
-        {showResult ? "다음 문제 (Enter)" : "정답 확인 (Enter)"}
-      </button>
+      <div className="action-area">
+        {!showResult ? (
+          <button className="action-btn" onClick={() => (inputMethod === 'input' ? checkAnswer() : setShowResult(true))}>
+            {inputMethod === 'input' ? "정답 확인 (Enter)" : "정답 보기 (Enter)"}
+          </button>
+        ) : (
+          inputMethod === "input" ? (
+            <button className="action-btn secondary" onClick={nextQuestion}>다음 문제 (Enter)</button>
+          ) : (
+            <div className="self-check-buttons">
+              <button className="action-btn correct-btn" onClick={nextQuestion}>
+                알아요 (1)
+              </button>
+              <button className="action-btn wrong-btn" onClick={handleSelfWrong}>
+                몰라요 (2)
+              </button>
+            </div>
+          )
+        )}
+      </div>
     </div>
   );
 };
