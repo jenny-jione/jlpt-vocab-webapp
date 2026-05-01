@@ -23,35 +23,27 @@ function App() {
   const bookmarks = ["예문"]
 
   useEffect(() => {
+    const keyMap = {
+      "0": "/",
+      "a": "/add",
+      "t": "/test",
+      "c": "/categories",
+      "e": "/category/예문", // Example (예문)
+    };
+
     const handleKeyDown = (e) => {
-      switch (e.key) {
-        case "1":
-          navigate("/");          // 1 → 전체목록
-          break;
-        case "0":
-          navigate("/add");       // 0 → 단어 추가
-          break;
-        case "7":
-          navigate("/kanji");    // 7 → 랜덤한자
-          break;
-        case "8":
-          navigate("/categories");    // 8 → 카테고리
-          break;
-        case "9":
-          navigate("/category/예문");    // 9 → 예문
-          break;
-        default:
-          break;
+      // Input이나 TextArea 입력 중에는 단축키가 작동하지 않도록 방지
+      if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+
+      const path = keyMap[e.key.toLowerCase()];
+      if (path) {
+        navigate(path);
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown); // cleanup
-    };
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [navigate]);
-
 
   return (
     <>
