@@ -27,7 +27,6 @@ function App() {
       "0": "/",
       "a": "/add",
       "t": "/test",
-      "c": "/categories",
       "e": "/category/예문", // Example (예문)
     };
 
