@@ -183,6 +183,7 @@
   display: flex;
   gap: 10px;
   width: 100%;
+  margin-top: 10px;
 }
 
 /* 자가 테스트용 '알아요' 버튼 */
@@ -203,6 +204,26 @@
 
 .action-btn.wrong-btn:hover {
   background-color: #d14a41;
+}
+
+.action-btn.info-btn {
+  flex: 1;
+  background-color: #a4b3cb;
+}
+
+.action-btn.info-btn:hover {
+  flex: 1;
+  background-color: #92a3be;
+}
+
+.action-btn.dic-btn {
+  flex: 1;
+  background-color: #a4b3cb;
+}
+
+.action-btn.dic-btn:hover {
+  flex: 1;
+  background-color: #92a3be;
 }
 
 /* 자가진단 모드용 결과 박스 (추가) */

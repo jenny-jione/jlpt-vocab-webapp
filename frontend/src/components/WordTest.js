@@ -229,6 +229,21 @@ const WordTest = () => {
               <span className="detail-label">발음</span>
               <span className="detail-value">{currentWord.korean}</span>
             </div>
+            <div className="detail-item">
+              <span className="detail-label">카테고리</span>
+              <span className="detail-value">{currentWord.category.join(', ')}</span>
+            </div>
+          </div>
+
+          <div className="self-check-buttons">
+            <button className="action-btn info-btn">
+              단어정보 확인
+            </button>
+            <button 
+              className="action-btn dic-btn" 
+              onClick={() => window.open(`https://ja.dict.naver.com/#/search?range=word&query=${currentWord.word}`, '_blank')}>
+              사전에서 보기
+            </button>
           </div>          
 
 
