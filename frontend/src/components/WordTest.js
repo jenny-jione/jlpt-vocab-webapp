@@ -1,7 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import "./WordTest.css";
+import WordEditModal from "./WordEditModal";
+
 
 const WordTest = () => {
+  const [editingWord, setEditingWord] = useState(null);
   const [step, setStep] = useState(1);
   // 초기값을 첫 번째 모드로 설정
   const [testMode, setTestMode] = useState({
@@ -40,9 +43,15 @@ const WordTest = () => {
     }
   }, [step, showResult, currentIdx]);
 
+
+  const currentWord = testWords[currentIdx];
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.nativeEvent?.isComposing) return;
+
+      // 모달이 열려있을(editingWord가 존재할) 때는 테스트 관련 키보드 이벤트 무시
+      if (editingWord) return;
 
       if (e.key === "Enter") {
         e.preventDefault();
@@ -53,16 +62,36 @@ const WordTest = () => {
           else setShowResult(true); // 자가테스트 모드일 때 엔터 치면 정답 보기
         }
       }
-      
-      // 자가테스트 모드 단축키 추가 (1: 안다, 2: 모른다)
-      if (step === 2 && showResult && inputMethod === "self") {
-        if (e.key === "1") nextQuestion();
-        if (e.key === "2") handleSelfWrong();
-      }
-    };
+            
+      if (step === 2 && showResult) {
+            // 1. 자가테스트 전용 단축키 (1, 2)
+            if (inputMethod === "self") {
+              if (e.key === "1") nextQuestion();
+              if (e.key === "2") handleSelfWrong();
+            }
+
+            // 2. 공통 단축키 ([, ])
+            // 단어정보 확인 (모달 열기)
+            if (e.key === "[") {
+              e.preventDefault(); // 키보드 입력 [ 이 모달의 input에 전달되지 않도록 막는다.
+              if (currentWord) {
+                setEditingWord(currentWord);
+              }
+            }
+            
+            // 사전에서 보기 (새 창 열기)
+            if (e.key === "]") {
+              e.preventDefault(); // 👈 이것도 추가해두면 불필요한 입력을 방지할 수 있습니다.
+              if (currentWord && currentWord.word) {
+                window.open(`https://ja.dict.naver.com/#/search?range=word&query=${currentWord.word}`, '_blank');
+              }
+            }
+          }
+        };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [step, showResult, currentIdx, userAnswer]);
+}, [step, showResult, currentIdx, userAnswer, editingWord, currentWord]); // ✅ currentWord 추가 확인
+
 
   const startTest = async () => {
     try {
@@ -167,7 +196,6 @@ const WordTest = () => {
   }
 
   // 2단계: 시험 진행
-  const currentWord = testWords[currentIdx];
   const isCorrect = currentWord[testMode.answer] === userAnswer;
 
   return (
@@ -236,7 +264,10 @@ const WordTest = () => {
           </div>
 
           <div className="self-check-buttons">
-            <button className="action-btn info-btn">
+            <button 
+              className="action-btn info-btn"
+              onClick={() => setEditingWord(currentWord)}
+            >
               단어정보 확인
             </button>
             <button 
@@ -270,6 +301,11 @@ const WordTest = () => {
           )
         )}
       </div>
+      {editingWord && (<WordEditModal 
+        editingWord={editingWord} 
+        setEditingWord={setEditingWord}
+        // 테스트 화면에서는 수정 후 굳이 목록을 다시 불러올 필요가 없다면 비워둬도 됨
+      />)}
     </div>
   );
 };

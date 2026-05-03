@@ -2,7 +2,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./WordTable.css";
-import { API_URL } from "../constants"; // ✅ import
+import { API_URL } from "../constants";
+import WordEditModal from "./WordEditModal";
 
 
 function WordTable({ words, refreshWords }) {
@@ -17,26 +18,6 @@ function WordTable({ words, refreshWords }) {
     setEditedData({ ...item });
   };
 
-  const handleChange = (field, value) => {
-    setEditedData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleSave = async () => {
-    try {
-      const response = await fetch(`${API_URL}/kanji/${editingWord.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editedData),
-      });
-
-      if (!response.ok) throw new Error("수정 실패");
-      console.log("수정 성공!");
-      setEditingWord(null); // 모달 닫기
-      await refreshWords(); // ✅ 부모에서 다시 데이터 fetch
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const handleCheckCount = async (item, mode) => {
     try {
@@ -105,38 +86,6 @@ function WordTable({ words, refreshWords }) {
   });
 };
 
-
-  // ✅ ESC 키 누르면 모달 닫기
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === "Escape") {
-        setEditingWord(null);
-      }
-    };
-    if (editingWord) {
-      document.addEventListener("keydown", handleKeyDown);
-    }
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [editingWord]);
-
-
-  useEffect(() => {
-  if (!editingWord) return;
-
-  const fetchData = async () => {
-    try {
-      const res = await fetch(`${API_URL}/word/${editingWord.id}`);
-      const data = await res.json();
-      setRelatedList(data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  fetchData();
-}, [editingWord]);
 
   return (
     <>
@@ -259,97 +208,14 @@ function WordTable({ words, refreshWords }) {
             </tr>
           ))}
         </tbody>
-
-
       </table>
 
       {/* ✅ 모달창 */}
-      {editingWord && (
-        <div className="modal-overlay" onClick={() => setEditingWord(null)}>
-          <div
-            className="modal-content"
-            onClick={(e) => e.stopPropagation()} // 배경 클릭 시 닫힘 방지
-          >
-            <h2>단어 수정</h2>
-            <div className="form-row meta">
-              단어 체크 횟수: {editedData.wrong_count}
-              <br></br>
-              {formatKST(editedData.created_at)}
-              <br></br>
-              {formatKST(editedData.updated_at)}
-              <br></br>
-              <div>
-              {relatedList.map((item, index) => (
-                <button
-                  key={`${item.word_id}-${index}`}
-                  onClick={() => navigate(`/kanji/${item.kanji}`)}
-                  className="word-btn">
-                  {item.kanji}
-                </button>
-              ))}
-              </div>
-            </div>
-
-            <div className="form-row">
-              <label>단어</label>
-              <input
-                value={editedData.word}
-                onChange={(e) => handleChange("word", e.target.value)}
-              />
-            </div>
-
-            <div className="form-row">
-              <label>히라가나</label>
-              <input
-                value={editedData.hiragana}
-                onChange={(e) => handleChange("hiragana", e.target.value)}
-              />
-            </div>
-
-            <div className="form-row">
-              <label>뜻</label>
-              <input
-                value={editedData.meaning}
-                onChange={(e) => handleChange("meaning", e.target.value)}
-              />
-            </div>
-
-            <div className="form-row">
-              <label>한국어 발음</label>
-              <input
-                value={editedData.korean}
-                onChange={(e) => handleChange("korean", e.target.value)}
-              />
-            </div>
-            
-            <div className="form-row">
-              <label>분류</label>
-              <input
-                ref={autoFocusRef}
-                value={editedData.category ? editedData.category.join(",") : ""}
-                onChange={(e) =>
-                  handleChange(
-                    "category",
-                    e.target.value.split(",").map((v) => v.trim())
-                  )
-                }
-              />
-            </div>
-
-            <button className="add-btn" onClick={handleSave}>
-              저장
-            </button>
-            <button
-              className="add-btn"
-              style={{ backgroundColor: "#ccc", marginTop: "10px" }}
-              onClick={() => setEditingWord(null)}
-            >
-              취소
-            </button>
-          </div>
-        </div>
-      )}
-
+      {editingWord && (<WordEditModal 
+        editingWord={editingWord} 
+        setEditingWord={setEditingWord} 
+        refreshWords={refreshWords} 
+      />)}
 
     </>
   );
