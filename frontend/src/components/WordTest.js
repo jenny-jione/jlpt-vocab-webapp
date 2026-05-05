@@ -24,11 +24,11 @@ const WordTest = () => {
   const API_URL = "http://127.0.0.1:8000";
 
   // 테스트 모드 정의
-    const TEST_MODES = [
-      { key: "word_to_meaning", label: "단어 ➔ 뜻", question: "word", answer: "meaning" },
-      { key: "word_to_hira", label: "단어 ➔ 히라가나", question: "word", answer: "hiragana" },
-      { key: "meaning_to_word", label: "뜻 ➔ 단어", question: "meaning", answer: "word" },
-      { key: "meaning_to_hira", label: "뜻 ➔ 히라가나", question: "meaning", answer: "hiragana" },
+  const TEST_MODES = [
+    { key: "word_to_meaning", label: "단어 ➔ 뜻", question: "word", answer: "meaning" },
+    { key: "word_to_hira", label: "단어 ➔ 히라가나", question: "word", answer: "hiragana" },
+    { key: "meaning_to_word", label: "뜻 ➔ 단어", question: "meaning", answer: "word" },
+    { key: "meaning_to_hira", label: "뜻 ➔ 히라가나", question: "meaning", answer: "hiragana" },
   ];
 
   // 현재 필드(word, meaning 등)의 한글 라벨 찾기
