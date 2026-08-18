@@ -119,7 +119,10 @@ function WordTable({ words, refreshWords }) {
 
         <tbody>
           {words.map((item) => (
-            <tr key={`${item.word}-${item.hiragana}-${item.meaning}`}>
+            <tr
+              key={`${item.word}-${item.hiragana}-${item.meaning}`}
+              onClick={() => handleEditClick(item)}
+            >
 
               {visibleColumns.includes("word") && (
                 <td>{item.word}</td>
@@ -144,7 +147,10 @@ function WordTable({ words, refreshWords }) {
                       <button
                         key={kanji}
                         className="word-btn"
-                        onClick={() => navigate(`/kanji/${kanji}`)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/kanji/${kanji}`);
+                        }}
                       >
                         {kanji}
                       </button>
@@ -166,7 +172,10 @@ function WordTable({ words, refreshWords }) {
                       <button
                         key={c}
                         className="word-btn category-btn"
-                        onClick={() => navigate(`/category/${c}`)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/category/${c}`);
+                        }}
                       >
                         {c}
                       </button>
@@ -177,14 +186,6 @@ function WordTable({ words, refreshWords }) {
 
               {visibleColumns.includes("edit") && (
                 <td>
-                  <button
-                    key={item.word}
-                    className="word-btn category-btn"
-                    onClick={() => handleEditClick(item)}
-                  >
-                    ✍🏻
-                  </button>
-
                   <button
                     className="word-btn category-btn"
                     onClick={() => handleCheckCount(item, "increase")}
