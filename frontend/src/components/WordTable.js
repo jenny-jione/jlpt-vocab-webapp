@@ -162,11 +162,6 @@ function WordTable({ words, refreshWords }) {
               {visibleColumns.includes("category") && (
                 <td>
                   <div>
-                    <span 
-                      className="info-badge"
-                      onClick={() => handleEditClick(item)}>
-                        ⓘ
-                    </span>
                     <span className="check-badge">{item.wrong_count}</span>
                     {item.category.map((c) => (
                       <button
